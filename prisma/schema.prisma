@@ -9,7 +9,8 @@ datasource db {
 
 model User {
   id           String   @id @default(cuid())
-  githubId     Int      @unique
+  githubId     Int?     @unique
+  googleId     String?  @unique
   login        String
   avatarUrl    String?
   email        String?

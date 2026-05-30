@@ -12,7 +12,7 @@ export default function Home() {
                 Pricing
               </Link>
               <a
-                href="/api/auth/login"
+                href="/api/auth/login?provider=github"
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Sign in with GitHub
@@ -37,7 +37,7 @@ export default function Home() {
           </p>
           <div className="mt-10 flex items-center justify-center gap-4">
             <a
-              href="/api/auth/login"
+              href="/api/auth/login?provider=github"
               className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
             >
               Get Started Free

@@ -57,10 +57,7 @@ export default function Navbar({ user }: NavbarProps) {
                     {user.reviewsUsed}/{user.reviewsLimit} reviews
                   </p>
                 </div>
-                <Link
-                  href={user.avatarUrl || "/api/auth/login"}
-                  className="flex items-center gap-2"
-                >
+                <Link href="/dashboard" className="flex items-center gap-2">
                   {user.avatarUrl ? (
                     <img src={user.avatarUrl} alt="" className="w-8 h-8 rounded-full" />
                   ) : (
@@ -71,12 +68,26 @@ export default function Navbar({ user }: NavbarProps) {
                 </Link>
               </div>
             ) : (
-              <a
-                href="/api/auth/login"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-              >
-                Sign in with GitHub
-              </a>
+              <div className="flex items-center gap-2">
+                <a
+                  href="/api/auth/login?provider=github"
+                  className="bg-gray-800 hover:bg-gray-900 text-white px-3 py-1 rounded-lg text-sm font-medium transition-colors"
+                >
+                  GitHub
+                </a>
+                <a
+                  href="/api/auth/login?provider=google"
+                  className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm font-medium transition-colors"
+                >
+                  Google
+                </a>
+                <a
+                  href="/auth/email"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-sm font-medium transition-colors"
+                >
+                  Email
+                </a>
+              </div>
             )}
           </div>
         </div>

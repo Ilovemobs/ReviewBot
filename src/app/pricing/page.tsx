@@ -112,7 +112,7 @@ export default async function PricingPage() {
                 )
               ) : (
                 <a
-                  href="/api/auth/login"
+                  href="/api/auth/login?provider=github"
                   className={`block text-center font-medium py-3 rounded-lg text-sm transition-colors ${
                     plan.highlighted
                       ? "bg-blue-600 hover:bg-blue-700 text-white"

@@ -7,7 +7,8 @@ const COOKIE_NAME = "session";
 
 export type SessionUser = {
   id: string;
-  githubId: number;
+  githubId?: number | null;
+  googleId?: string | null;
   login: string;
   avatarUrl: string | null;
   email: string | null;
@@ -60,7 +61,7 @@ export async function destroySession() {
 export async function requireAuth(): Promise<SessionUser> {
   const session = await getSession();
   if (!session) {
-    const url = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${getBaseUrl()}/api/auth/callback&scope=repo,user:email`;
+    const url = `${getBaseUrl()}/`;
     throw new RedirectError(url);
   }
   return session;
@@ -87,4 +88,22 @@ export async function refreshUserFromDb(session: SessionUser): Promise<SessionUs
     reviewsUsed: user.reviewsUsed,
     reviewsLimit: user.reviewsLimit,
   };
+}
+
+export async function signMagicToken(email: string): Promise<string> {
+  const token = await new SignJWT({ email })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("15m")
+    .sign(SECRET);
+  return token;
+}
+
+export async function verifyMagicToken(token: string): Promise<{ email: string } | null> {
+  try {
+    const { payload } = await jwtVerify(token, SECRET);
+    return payload as unknown as { email: string };
+  } catch {
+    return null;
+  }
 }
