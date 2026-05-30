@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  githubId     Int      @unique
+  login        String
+  avatarUrl    String?
+  email        String?
+  name         String?
+  plan         String   @default("free")
+  reviewsUsed  Int      @default(0)
+  reviewsLimit Int      @default(5)
+  githubToken  String?
+  stripeId     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  reviews      Review[]
+  installations Installation[]
+}
+
+model Installation {
+  id             String   @id @default(cuid())
+  installationId Int      @unique
+  owner          String
+  repo           String?
+  fullName       String?
+  enabled        Boolean  @default(true)
+  userId         String?
+  createdAt      DateTime @default(now())
+
+  user           User?    @relation(fields: [userId], references: [id])
+}
+
+model Review {
+  id                  String    @id @default(cuid())
+  repoFullName        String
+  prNumber            Int
+  prTitle             String?
+  prUrl               String?
+  commitSha           String?
+  status              String    @default("pending")
+  overallSeverity     String?
+  mergeRecommendation String?
+  summary             String?
+  findings            String?
+  error               String?
+  userId              String
+  createdAt           DateTime  @default(now())
+  completedAt         DateTime?
+
+  user                User      @relation(fields: [userId], references: [id])
+
+  @@unique([repoFullName, prNumber])
+}
