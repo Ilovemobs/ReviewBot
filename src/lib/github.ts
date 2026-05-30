@@ -1,15 +1,18 @@
 import { App } from "@octokit/app";
 import { Octokit } from "@octokit/rest";
+import { getEnv } from "./env";
 
 let appInstance: App<{ Octokit: typeof Octokit }> | null = null;
 
 function getApp() {
   if (!appInstance) {
+    const privateKey = getEnv("GITHUB_APP_PRIVATE_KEY").replace(/\\n/g, "\n");
+
     appInstance = new App({
-      appId: process.env.GITHUB_APP_ID!,
-      privateKey: process.env.GITHUB_APP_PRIVATE_KEY!.replace(/\\n/g, "\n"),
+      appId: parseInt(getEnv("GITHUB_APP_ID"), 10),
+      privateKey,
       Octokit,
-      webhooks: { secret: process.env.GITHUB_WEBHOOK_SECRET! },
+      webhooks: { secret: getEnv("GITHUB_WEBHOOK_SECRET") },
     });
   }
   return appInstance;

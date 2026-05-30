@@ -13,7 +13,7 @@ model User {
   googleId     String?  @unique
   login        String
   avatarUrl    String?
-  email        String?
+  email        String?   @unique
   name         String?
   plan         String   @default("free")
   reviewsUsed  Int      @default(0)

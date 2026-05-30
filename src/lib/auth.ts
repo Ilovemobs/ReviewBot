@@ -1,8 +1,9 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import prisma from "./prisma";
+import { getEnv } from "./env";
 
-const SECRET = new TextEncoder().encode(process.env.SESSION_SECRET || "fallback-secret-change-me");
+const SECRET = new TextEncoder().encode(getEnv("SESSION_SECRET"));
 const COOKIE_NAME = "session";
 
 export type SessionUser = {
@@ -81,6 +82,7 @@ export async function refreshUserFromDb(session: SessionUser): Promise<SessionUs
   return {
     id: user.id,
     githubId: user.githubId,
+    googleId: user.googleId,
     login: user.login,
     avatarUrl: user.avatarUrl,
     email: user.email,

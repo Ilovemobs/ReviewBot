@@ -17,12 +17,29 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No signature" }, { status: 401 });
   }
 
+  // Verify webhook signature
+  const crypto = await import("crypto");
+  const secret = process.env.GITHUB_WEBHOOK_SECRET || "";
+  const hmac = crypto.createHmac("sha256", secret);
+  hmac.update(body);
+  const expectedSignature = "sha256=" + hmac.digest("hex");
+
+  if (signature !== expectedSignature) {
+    console.warn(`Invalid webhook signature from delivery ${deliveryId}`);
+    return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
+  }
+
   if (event !== "pull_request") {
     return NextResponse.json({ ok: true, message: "Ignored event type" });
   }
 
   try {
-    const payload = JSON.parse(body);
+    let payload;
+    try {
+      payload = JSON.parse(body);
+    } catch (parseErr) {
+      return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+    }
     const action = payload.action;
 
     if (!["opened", "synchronize", "reopened"].includes(action)) {
